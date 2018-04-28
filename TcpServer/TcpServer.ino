@@ -13,11 +13,10 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.print("\nConnecting to "); Serial.println(ssid);
-  uint8_t i = 0;
-  while (WiFi.status() != WL_CONNECTED && i++ < 20) delay(500);
-  if (i == 21) {
-    Serial.print("Could not connect to"); Serial.println(ssid);
-    while (1) delay(500);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
   //start UART and the server
   Serial.begin(115200);
