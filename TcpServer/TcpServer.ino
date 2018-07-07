@@ -2,6 +2,9 @@
 
 const char* ssid = "D-Link_DIR-612";
 const char* password = "15111881955";
+const char* myName ="001" ;
+
+int wifi_led  = 12 ; 
 
 WiFiServer server(23);
 WiFiClient client;
@@ -10,6 +13,9 @@ String dataContent ;
 
 void setup() {
   Serial.begin(115200);
+  pinMode(wifi_led,OUTPUT);
+
+   
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.print("\nConnecting to "); Serial.println(ssid);
@@ -26,6 +32,10 @@ void setup() {
   Serial.print("Ready! Use 'telnet ");
   Serial.print(WiFi.localIP());
   Serial.println(" 23' to connect");
+
+
+
+
 }
 
 void loop() {
@@ -34,19 +44,40 @@ void loop() {
   }
 
   while (client.connected()) {
+      notifyWifiStatus(true);
     if (client.available()) {
       dataContent = readFromClient(client);
-      Serial.println("print---" + dataContent);
-      dataContent = "output-" + dataContent;
-      clientWrite(client, dataContent);
+      if(dataContent.indexOf("who are you?") >=  0 ) {
+        clientWriteMyName(client);
+      }else {
+        Serial.println("print---" + dataContent);
+        dataContent = "output-" + dataContent;
+        clientWrite(client, dataContent);
+      }
     }
-    dataContent = "";
+    clearDataContent();
   }
-   Serial.println("client close " + dataContent);
+  client.stop();
+  notifyWifiStatus(false);
+  Serial.println("client close" );
+  delay(100);
 }
 
-void clearContent(){
-  dataContent = "" ;
+
+void notifyWifiStatus(bool status) {
+  if(status ) {
+    digitalWrite(wifi_led, HIGH);
+  }else {
+    digitalWrite(wifi_led, LOW);
+  }   
+  
+}
+void clientWriteMyName(WiFiClient client){
+ clientWrite( client,"myName:"+String(myName)) ;
+}
+
+void clearDataContent(){
+  dataContent = "";
 }
 
 String readFromClient(WiFiClient client) {
