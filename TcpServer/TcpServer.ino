@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 
-const char* ssid = "FAST_B638";
-const char* password = "QQ3503170";
+const char* ssid = "D-Link_DIR-612";
+const char* password = "15111881955";
 
 WiFiServer server(23);
 WiFiClient client;
@@ -42,6 +42,11 @@ void loop() {
     }
     dataContent = "";
   }
+   Serial.println("client close " + dataContent);
+}
+
+void clearContent(){
+  dataContent = "" ;
 }
 
 String readFromClient(WiFiClient client) {
